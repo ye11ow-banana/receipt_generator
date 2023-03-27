@@ -1,0 +1,8 @@
+.idea/
+.DS_Store
+__pycache__/
+media/*
+.env
+.mypy_cache/
+.coverage
+logs/*
