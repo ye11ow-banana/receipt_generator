@@ -21,5 +21,6 @@ def generate_check(
     pdf_output = subprocess.run(command, stdout=subprocess.PIPE)
     content_file = ContentFile(pdf_output.stdout, name=file_name)
     check = Check.objects.get(printer_id=printer_pk, order__order_id=order_id)
+    check.status = 'RENDERED'
     check.pdf_file = content_file
     check.save()
