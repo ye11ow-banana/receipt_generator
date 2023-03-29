@@ -46,7 +46,7 @@ class Check(models.Model):
     status = models.CharField(
         'Check status', max_length=8, choices=STATUSES, default='NEW')
     pdf_file = models.FileField(
-        'Link to the generated PDF file', upload_to='media/pdf', null=True)
+        'Link to the generated PDF file', upload_to='pdf/%d', null=True)
 
     class Meta:
         db_table = 'check'

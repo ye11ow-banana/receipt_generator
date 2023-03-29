@@ -1,7 +1,9 @@
+from celery import group
+
 from django.db.models import QuerySet
 
 from .models import Printer, Check
-from .tasks import check_generator
+from .tasks import generate_check
 
 
 def get_printers_at_point(point_id: int) -> QuerySet[Printer]:
@@ -52,5 +54,8 @@ def create_checks_at_point(point_id: int, order_id: int, order: dict) -> None:
     """
     printers = get_printers_at_point(point_id).only('check_type')
     bulk_create_checks(printers, order)
-    for printer in printers:
-        check_generator.delay(order_id, printer.check_type)
+    group([
+        generate_check.s(
+            order_id, printer.check_type, printer.pk
+        ) for printer in printers
+    ])()
