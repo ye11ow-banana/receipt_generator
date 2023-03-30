@@ -1,0 +1,38 @@
+[
+{
+  "model": "checks.printer",
+  "pk": "17D39B7B739919DEED64B4AA699ED",
+  "fields": {
+    "name": "Brother MFC-J480DW",
+    "check_type": "KITCHEN",
+    "point_id": 1
+  }
+},
+{
+  "model": "checks.printer",
+  "pk": "212E24E6FBFB1B614454FE8E899BD",
+  "fields": {
+    "name": "HP PhotoSmart 7520",
+    "check_type": "CLIENT",
+    "point_id": 0
+  }
+},
+{
+  "model": "checks.printer",
+  "pk": "3E9676D43DF9BB479D4EA1AA44ED5",
+  "fields": {
+    "name": "Canon Pixma MX922",
+    "check_type": "CLIENT",
+    "point_id": 1
+  }
+},
+{
+  "model": "checks.printer",
+  "pk": "A56DB85944A6272D5A51512B797BC",
+  "fields": {
+    "name": "Epson Workforce WF-3640",
+    "check_type": "KITCHEN",
+    "point_id": 0
+  }
+}
+]
