@@ -52,3 +52,9 @@ def get_rendered_checks_at_point(point: str) -> QuerySet[Check]:
     return Check.objects.filter(
         printer__point_id=point, status='RENDERED'
     ).select_related('printer').only('printer', 'type', 'pdf_file')
+
+
+def set_printed_checks_status(checks: QuerySet[Check]) -> None:
+    for check in checks:
+        check.status = 'PRINTED'
+    Check.objects.bulk_update(checks, ('status',))
