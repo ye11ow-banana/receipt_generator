@@ -11,19 +11,6 @@ Install dependencies to your virtual environment
 pip install -r requirements.txt
 ```
 
-Run celery
-```sh
-celery -A config worker -l info
-```
-
-Run Django
-```sh
-python3 manage.py migrate
-```
-```sh
-python3 manage.py runserver
-```
-
 Set environment variables to .env file
 ```sh
 SECRET_KEY=
@@ -39,9 +26,21 @@ REDIS_PORT=6000
 ```
 
 Run docker
-
 ```sh
-docker-compose up
+docker-compose up -d
+```
+
+Run celery
+```sh
+celery -A config worker -l info
+```
+
+Run Django
+```sh
+python3 manage.py migrate
+```
+```sh
+python3 manage.py runserver
 ```
 
 ---
