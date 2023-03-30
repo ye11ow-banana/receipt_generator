@@ -1,0 +1,111 @@
+swagger: '2.0'
+info:
+  title: Receipt generator
+  description: made by Yakubets Mykhailo
+  termsOfService: https://www.google.com/policies/terms/
+  contact:
+    email: contact@snippets.local
+  license:
+    name: BSD License
+  version: v1
+host: 127.0.0.1:8000
+schemes:
+  - http
+basePath: /api/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+paths:
+  /add_new_order/:
+    post:
+      operationId: add_new_order_create
+      description: Create an events
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            required:
+              - order_id
+              - point_id
+              - products
+            type: object
+            properties:
+              order_id:
+                type: integer
+              point_id:
+                type: integer
+              products:
+                type: array
+                items:
+                  type: object
+      responses:
+        '201':
+          description: ''
+          schema:
+            required:
+              - order_id
+              - point_id
+              - products
+            type: object
+            properties:
+              order_id:
+                type: integer
+              point_id:
+                type: integer
+              products:
+                type: array
+                items:
+                  type: object
+      tags:
+        - add_new_order
+    parameters: []
+  /get_rendered_checks_at_point/{point}/:
+    get:
+      operationId: get_rendered_checks_at_point_read
+      description: |-
+        Get all Checks that are ready to be
+        printed at a point with status changing.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RenderedChecks'
+      tags:
+        - get_rendered_checks_at_point
+    parameters:
+      - name: point
+        in: path
+        required: true
+        type: string
+definitions:
+  RenderedChecks:
+    required:
+      - type
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      type:
+        title: Check type
+        type: string
+        enum:
+          - KITCHEN
+          - CLIENT
+      pdf_file:
+        title: Link to the generated PDF file
+        type: string
+        readOnly: true
+        x-nullable: true
+        format: uri
