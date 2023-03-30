@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from . import services
 from .models import Check
-from .serializers import RenderedChecksSerializer
+from .serializers import RenderedChecksSerializer, AddNewOrderSerializer
 
 
 class AddNewOrderView(APIView):
@@ -16,30 +16,11 @@ class AddNewOrderView(APIView):
     """
 
     def post(self, request: Request) -> Response:
-        try:
-            point_id = request.data['point_id']
-            order_id = request.data['order_id']
-        except KeyError:
-            return Response(
-                {'result': False, 'msg': 'Invalid request data'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if not services.is_printers_at_point_exists(point_id):
-            return Response(
-                {'result': False, 'msg': 'There is no printers at the point'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if services.is_checks_with_order_id_exists(order_id):
-            return Response(
-                {
-                    'result': False,
-                    'msg': 'Check has been already added',
-                    'order_id': order_id,
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer = AddNewOrderSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(dict(result=False, errors=serializer.errors))
+        order_id = serializer.validated_data['order_id']
+        point_id = serializer.validated_data['point_id']
 
         services.create_checks_at_point(point_id, order_id, request.data)
 
