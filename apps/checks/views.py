@@ -1,9 +1,11 @@
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 
 from . import services
+from .serializers import RenderedChecksSerializer
 
 
 class AddNewOrderView(APIView):
@@ -42,4 +44,16 @@ class AddNewOrderView(APIView):
         return Response({'result': True}, status=status.HTTP_201_CREATED)
 
 
+class GetRenderedChecksAtPointView(ListAPIView):
+    """
+    Get all Checks that are ready
+    to be printed at a point.
+    """
+    serializer_class = RenderedChecksSerializer
+
+    def get_queryset(self):
+        return services.get_rendered_checks_at_point(self.kwargs['point'])
+
+
 add_new_order = AddNewOrderView.as_view()
+get_rendered_checks_at_point = GetRenderedChecksAtPointView.as_view()

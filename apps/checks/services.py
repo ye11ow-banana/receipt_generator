@@ -42,3 +42,13 @@ def create_checks_at_point(point_id: int, order_id: int, order: dict) -> None:
             order_id, printer.check_type, printer.pk
         ) for printer in printers
     ])()
+
+
+def get_rendered_checks_at_point(point: str) -> QuerySet[Check]:
+    """
+    Get all Checks with status='RENDERED' at a `point`
+    with needed for printer device fields.
+    """
+    return Check.objects.filter(
+        printer__point_id=point, status='RENDERED'
+    ).select_related('printer').only('printer', 'type', 'pdf_file')
