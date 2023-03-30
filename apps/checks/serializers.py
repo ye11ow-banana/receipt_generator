@@ -14,7 +14,8 @@ class AddNewOrderSerializer(serializers.Serializer):
         Check if there are printers with this point_id in db.
         """
         if not services.is_printers_at_point_exists(value):
-            raise serializers.ValidationError('There is no printers at the point')
+            raise serializers.ValidationError(
+                'There is no printers at the point')
         return value
 
     def validate_order_id(self, value: int) -> int:
