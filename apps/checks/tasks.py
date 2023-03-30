@@ -1,5 +1,7 @@
-import subprocess
+import base64
+import json
 
+import requests
 from celery import shared_task
 
 from django.conf import settings
@@ -15,11 +17,17 @@ def generate_check(
     """
     Create pdf file of an order for Check from html template.
     """
+    url = 'http://0.0.0.0:80/'
     template_path = str(settings.BASE_DIR / 'templates/check_template.html')
+    data = {
+        'contents': base64.b64encode(
+            open(template_path, 'rb').read()
+        ).decode('utf-8')
+    }
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, data=json.dumps(data), headers=headers)
     file_name = f'{order_id}_{check_type}.pdf'
-    command = ['wkhtmltopdf', template_path, '-']
-    pdf_output = subprocess.run(command, stdout=subprocess.PIPE)
-    content_file = ContentFile(pdf_output.stdout, name=file_name)
+    content_file = ContentFile(response.content, name=file_name)
     check = Check.objects.get(printer_id=printer_pk, order__order_id=order_id)
     check.status = 'RENDERED'
     check.pdf_file = content_file
