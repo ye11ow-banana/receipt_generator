@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.2
+    restart: always
+    ports:
+      - '5001:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - '6000:6379'
+    command: redis-server
+    volumes:
+      - cache:/data
+  wkhtmltopdf:
+    image: openlabs/docker-wkhtmltopdf-aas
+    restart: always
+    ports:
+      - '80:80'
+
+volumes:
+  postgres_data:
+  cache:
+    driver: local
