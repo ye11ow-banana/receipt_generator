@@ -28,7 +28,9 @@ def generate_check(
     response = requests.post(url, data=json.dumps(data), headers=headers)
     file_name = f'{order_id}_{check_type}.pdf'
     content_file = ContentFile(response.content, name=file_name)
-    check = Check.objects.get(printer_id=printer_pk, order__order_id=order_id)
+    check = Check.objects.filter(
+        printer_id=printer_pk, order__order_id=order_id
+    ).only('printer_id', 'order').get()
     check.status = 'RENDERED'
     check.pdf_file = content_file
     check.save()
