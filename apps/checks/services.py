@@ -1,4 +1,5 @@
 from celery import group
+from django.core.files.base import ContentFile
 
 from django.db.models import QuerySet
 
@@ -39,7 +40,7 @@ def create_checks_at_point(point_id: int, order_id: int, order: dict) -> None:
     bulk_create_checks(printers, order)
     group([
         generate_check.s(
-            order_id, printer.check_type, printer.pk
+            order, order_id, printer.check_type, printer.pk
         ) for printer in printers
     ])()
 
@@ -52,3 +53,18 @@ def get_rendered_checks_at_point(point: str) -> QuerySet[Check]:
     return Check.objects.filter(
         printer__point_id=point, status='RENDERED'
     ).select_related('printer').only('printer', 'type', 'pdf_file')
+
+
+def update_check_to_rendered(
+    printer_pk: str, order_id: int, content_file: ContentFile
+) -> None:
+    """
+    Update the status and PDF file of a Check based
+    on the given `printer_pk` and `order_id`.
+    """
+    check = Check.objects.filter(
+        printer_id=printer_pk, order__order_id=order_id
+    ).only('id').get()
+    check.status = 'RENDERED'
+    check.pdf_file = content_file
+    check.save()
