@@ -18,7 +18,10 @@ class AddNewOrderView(APIView):
     def post(self, request: Request) -> Response:
         serializer = AddNewOrderSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(dict(result=False, errors=serializer.errors))
+            return Response(
+                dict(result=False, errors=serializer.errors),
+                status=status.HTTP_400_BAD_REQUEST
+            )
         order_id = serializer.validated_data['order_id']
         point_id = serializer.validated_data['point_id']
 
