@@ -42,8 +42,7 @@ class GetRenderedChecksAtPointView(ListAPIView):
 
     def get(self, request: Request, *args, **kwargs) -> Response:
         response = self.list(request, *args, **kwargs)
-        checks = self.get_queryset()
-        services.set_printed_checks_status(checks)
+        self.get_queryset().update(status='PRINTED')
         return response
 
 
