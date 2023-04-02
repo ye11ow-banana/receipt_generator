@@ -4,10 +4,20 @@ from . import services
 from checks.models import Check
 
 
+class ProductSerializer(serializers.Serializer):
+    """
+    Represent a product in an order.
+    """
+    name = serializers.CharField(max_length=255)
+    quantity = serializers.IntegerField(min_value=1)
+    price = serializers.IntegerField()
+
+
 class AddNewOrderSerializer(serializers.Serializer):
     point_id = serializers.IntegerField(min_value=0)
     order_id = serializers.IntegerField(min_value=1)
-    products = serializers.JSONField()
+    products = serializers.ListField(
+        child=ProductSerializer(), allow_empty=False)
 
     def validate_point_id(self, value: int) -> int:
         """
